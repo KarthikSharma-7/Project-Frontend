@@ -1,42 +1,38 @@
-import React, { useEffect, createContext, useReducer,useContext } from 'react';
-import './App.css';
-import Navbar from './components/navbar';
-import { BrowserRouter, Route, Switch, useHistory } from 'react-router-dom';
-import Home from './components/screens/home';
-import Signin from './components/screens/signin';
-import Signup from './components/screens/signup';
-import Profile from './components/screens/profile';
-import Createpost from './components/screens/createpost';
-import { initialState, reducer } from './reducers/usereducer';
-import UserProfile from './components/screens/UserProfile';
+import React, { useEffect, createContext, useReducer, useContext } from "react";
+import "./App.css";
+import Navbar from "./components/navbar";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import Home from "./components/screens/home";
+import Signin from "./components/screens/signin";
+import Signup from "./components/screens/signup";
+import Profile from "./components/screens/profile";
+import Createpost from "./components/screens/createpost";
+import { initialState, reducer } from "./reducers/usereducer";
+import UserProfile from "./components/screens/userProfile";
 export const UserContext = createContext();
 
-
 const Routing = () => {
-  const history = useHistory();
-  const {state,dispatch}=useContext(UserContext);
-  useEffect(()=>{
-    const user=JSON.parse(localStorage.getItem("user"));
-    if(user)
-    {
-      dispatch({type:"USER",payload:user});
+  const navigate = useNavigate();
+  const { state, dispatch } = useContext(UserContext);
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      dispatch({ type: "USER", payload: user });
+    } else {
+      navigate("/signin");
     }
-    else{
-      history.push('/signin');
-    }
-  },[])
+  }, []);
   return (
-    <Switch>
-      <Route exact path='/' component={Home} />
-      <Route exact path='/signin' component={Signin} />
-      <Route exact path='/signup' component={Signup} />
-      <Route exact path='/profile' component={Profile} />
-      <Route exact path='/createpost' component={Createpost} />
-      <Route exact path='/profile/:userid' component={UserProfile} />
-    </Switch>
-  )
-}
-
+    <Routes>
+      <Route exact path="/" element={<Home />} />
+      <Route exact path="/signin" element={<Signin />} />
+      <Route exact path="/signup" element={<Signup />} />
+      <Route exact path="/profile" element={<Profile />} />
+      <Route exact path="/createpost" element={<Createpost />} />
+      <Route exact path="/profile/:userId" element={<UserProfile />} />
+    </Routes>
+  );
+};
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
